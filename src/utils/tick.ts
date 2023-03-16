@@ -1,13 +1,13 @@
 /* eslint-disable prefer-const */
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { bigDecimalExponated, safeDiv } from '.'
-import { Tick } from '../types/schema'
-import { Mint as MintEvent } from '../types/templates/Pool/Pool'
+import { Tick } from '../../generated/schema'
+import { Mint as MintEvent } from '../../generated/Factory/Pool'
 import { ONE_BD, ZERO_BD, ZERO_BI } from './constants'
 
-export function createTick(tickId: string, tickIdx: i32, poolId: string, event: MintEvent): Tick {
+export function createTick(tickId: string, tickIdx: number, poolId: string, event: MintEvent): Tick {
   let tick = new Tick(tickId)
-  tick.tickIdx = BigInt.fromI32(tickIdx)
+  tick.tickIdx = BigInt.fromI32(tickIdx as i32)
   tick.pool = poolId
   tick.poolAddress = poolId
 
@@ -21,7 +21,7 @@ export function createTick(tickId: string, tickIdx: i32, poolId: string, event: 
   tick.price1 = ONE_BD
 
   // 1.0001^tick is token1/token0.
-  let price0 = bigDecimalExponated(BigDecimal.fromString('1.0001'), BigInt.fromI32(tickIdx))
+  let price0 = bigDecimalExponated(BigDecimal.fromString('1.0001'), BigInt.fromI32(tickIdx as i32))
   tick.price0 = price0
   tick.price1 = safeDiv(ONE_BD, price0)
 
@@ -54,5 +54,5 @@ export function feeTierToTickSpacing(feeTier: BigInt): BigInt {
     return BigInt.fromI32(1)
   }
 
-  throw Error('Unexpected fee tier')
+  throw new Error('Unexpected fee tier')
 }
